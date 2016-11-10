@@ -30,11 +30,11 @@ class RestoreRolesTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param array|null $originalRoles
+     * @param array $originalRoles
      */
-    public function setOriginalRoles(array $originalRoles = null)
+    public function setOriginalRoles($originalRoles)
     {
-        $this->originalRoles = $originalRoles ?: array();
+        $this->originalRoles = $originalRoles;
     }
 
     /**
@@ -64,7 +64,7 @@ class RestoreRolesTransformer implements DataTransformerInterface
 
         list($availableRoles, ) = $this->rolesBuilder->getRoles();
 
-        $hiddenRoles = array_diff($this->originalRoles, array_keys($availableRoles));
+        $hiddenRoles = array_diff($this->originalRoles, $availableRoles);
 
         return array_merge($selectedRoles, $hiddenRoles);
     }

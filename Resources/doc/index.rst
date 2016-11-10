@@ -14,4 +14,3 @@ Reference Guide
    reference/two_step_validation
    reference/user_dashboard
    reference/profile_edition
-   reference/api

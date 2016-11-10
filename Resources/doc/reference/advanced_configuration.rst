@@ -1,7 +1,3 @@
-.. index::
-    single: Advanced configuration
-    single: Options
-
 Advanced Configuration
 ======================
 
@@ -27,8 +23,8 @@ Full configuration options:
 
     sonata_user:
         security_acl:           false
-	
-	manager_type: orm # Can be orm for mongodb
+
+		manager_type: orm # Can be orm for mongodb
 
         table:
             user_group: "my_custom_user_group_association_table_name"
@@ -71,18 +67,8 @@ Full configuration options:
                         # Prototype
                         id:                   []
                     position:             right
+            # This allows you to specify where you want your user redirected once he activated his account
             register:
-                # You may customize the registration forms over here
-                form:
-                    type:                 sonata_user_registration
-                    handler:              sonata.user.registration.form.handler.default
-                    name:                 sonata_user_registration_form
-                    validation_groups:
-
-                        # Defaults:
-                        - Registration
-                        - Default
-                # This allows you to specify where you want your user redirected once he activated his account
                 confirm:
                     redirect:
                         # Set it to false to disable redirection

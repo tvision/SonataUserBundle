@@ -13,7 +13,6 @@ namespace Sonata\Test\UserBundle\Controller\Api;
 
 use Sonata\UserBundle\Controller\Api\GroupController;
 
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class GroupControllerTest
@@ -52,114 +51,14 @@ class GroupControllerTest extends \PHPUnit_Framework_TestCase
         $this->createGroupController()->getGroupAction(42);
     }
 
-    public function testPostGroupAction()
-    {
-        $group = $this->getMock('FOS\UserBundle\Model\GroupInterface');
-
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-        $groupManager->expects($this->once())->method('updateGroup')->will($this->returnValue($group));
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')->disableOriginalConstructor()->getMock();
-        $form->expects($this->once())->method('bind');
-        $form->expects($this->once())->method('isValid')->will($this->returnValue(true));
-        $form->expects($this->once())->method('getData')->will($this->returnValue($group));
-
-        $formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
-        $formFactory->expects($this->once())->method('createNamed')->will($this->returnValue($form));
-
-        $view = $this->createGroupController(null, $groupManager, $formFactory)->postGroupAction(new Request());
-
-        $this->assertInstanceOf('FOS\RestBundle\View\View', $view);
-    }
-
-    public function testPostGroupInvalidAction()
-    {
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')->disableOriginalConstructor()->getMock();
-        $form->expects($this->once())->method('bind');
-        $form->expects($this->once())->method('isValid')->will($this->returnValue(false));
-
-        $formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
-        $formFactory->expects($this->once())->method('createNamed')->will($this->returnValue($form));
-
-        $view = $this->createGroupController(null, $groupManager, $formFactory)->postGroupAction(new Request());
-
-        $this->assertInstanceOf('Symfony\Component\Form\FormInterface', $view);
-    }
-
-    public function testPutGroupAction()
-    {
-        $group = $this->getMock('FOS\UserBundle\Model\GroupInterface');
-
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-        $groupManager->expects($this->once())->method('findGroupBy')->will($this->returnValue($group));
-        $groupManager->expects($this->once())->method('updateGroup')->will($this->returnValue($group));
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')->disableOriginalConstructor()->getMock();
-        $form->expects($this->once())->method('bind');
-        $form->expects($this->once())->method('isValid')->will($this->returnValue(true));
-        $form->expects($this->once())->method('getData')->will($this->returnValue($group));
-
-        $formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
-        $formFactory->expects($this->once())->method('createNamed')->will($this->returnValue($form));
-
-        $view = $this->createGroupController($group, $groupManager, $formFactory)->putGroupAction(1, new Request());
-
-        $this->assertInstanceOf('FOS\RestBundle\View\View', $view);
-    }
-
-    public function testPutGroupInvalidAction()
-    {
-        $group = $this->getMock('FOS\UserBundle\Model\GroupInterface');
-
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-        $groupManager->expects($this->once())->method('findGroupBy')->will($this->returnValue($group));
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')->disableOriginalConstructor()->getMock();
-        $form->expects($this->once())->method('bind');
-        $form->expects($this->once())->method('isValid')->will($this->returnValue(false));
-
-        $formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
-        $formFactory->expects($this->once())->method('createNamed')->will($this->returnValue($form));
-
-        $view = $this->createGroupController($group, $groupManager, $formFactory)->putGroupAction(1, new Request());
-
-        $this->assertInstanceOf('Symfony\Component\Form\FormInterface', $view);
-    }
-
-    public function testDeleteGroupAction()
-    {
-        $group = $this->getMock('FOS\UserBundle\Model\GroupInterface');
-
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-        $groupManager->expects($this->once())->method('findGroupBy')->will($this->returnValue($group));
-        $groupManager->expects($this->once())->method('deleteGroup')->will($this->returnValue($group));
-
-        $view = $this->createGroupController($group, $groupManager)->deleteGroupAction(1);
-
-        $this->assertEquals(array('deleted' => true), $view);
-    }
-
-    public function testDeleteGroupInvalidAction()
-    {
-        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
-
-        $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
-        $groupManager->expects($this->once())->method('findGroupBy')->will($this->returnValue(null));
-        $groupManager->expects($this->never())->method('deleteGroup');
-
-        $this->createGroupController(null, $groupManager)->deleteGroupAction(1);
-    }
 
     /**
      * @param $group
      * @param $groupManager
-     * @param $formFactory
      *
      * @return GroupController
      */
-    public function createGroupController($group = null, $groupManager = null, $formFactory = null)
+    public function createGroupController($group = null, $groupManager = null)
     {
         if (null === $groupManager) {
             $groupManager = $this->getMock('Sonata\UserBundle\Model\GroupManagerInterface');
@@ -167,10 +66,7 @@ class GroupControllerTest extends \PHPUnit_Framework_TestCase
         if (null !== $group) {
             $groupManager->expects($this->once())->method('findGroupBy')->will($this->returnValue($group));
         }
-        if (null === $formFactory) {
-            $formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
-        }
 
-        return new GroupController($groupManager, $formFactory);
+        return new GroupController($groupManager);
     }
 }

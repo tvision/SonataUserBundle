@@ -1,19 +1,16 @@
-.. index::
-    single: Installation
-
 Installation
 ============
-
 Prerequisites
 -------------
-
-PHP 5.3 and Symfony 2 are needed to make this bundle work; there are also some Sonata dependencies that need to be installed and configured beforehand:
+PHP 5.3 and Symfony 2 are needed to make this bundle work ; there are also some
+Sonata dependencies that need to be installed and configured beforehand :
 
     - `SonataAdminBundle <http://sonata-project.org/bundles/admin>`_
     - `SonataEasyExtendsBundle <http://sonata-project.org/bundles/easy-extends>`_
 
 You will need to install those in their 2.0 branches (or master if they don't
-have a similar branch). Follow also their configuration step; you will find everything you need in their own installation chapter.
+have a similar branch). Follow also their configuration step ; you will find
+everything you need in their installation chapter.
 
 .. note::
     If a dependency is already installed somewhere in your project or in
@@ -22,20 +19,20 @@ have a similar branch). Follow also their configuration step; you will find ever
 Enable the Bundle
 -----------------
 
-.. code-block:: bash
+.. code-block:: ini
 
-    php composer.phar require sonata-project/user-bundle --no-update
-    php composer.phar require sonata-project/doctrine-orm-admin-bundle  --no-update # optional
-    php composer.phar update
+    php composer require sonata-project/user-bundle --no-update
+    php composer require sonata-project/doctrine-orm-admin-bundle  --no-update # optional
+    php composer update
 
-Next, be sure to enable the bundles in your and ``AppKernel.php`` file:
+Next, be sure to enable the bundles in your autoload.php and AppKernel.php
+files:
 
 .. code-block:: php
 
     <?php
 
-    // app/AppKernel.php
-
+    // app/appkernel.php
     public function registerbundles()
     {
         return array(
@@ -44,9 +41,7 @@ Next, be sure to enable the bundles in your and ``AppKernel.php`` file:
             // ...
             // You have 2 options to initialize the SonataUserBundle in your AppKernel,
             // you can select which bundle SonataUserBundle extends
-            // Most of the cases, you'll want to extend FOSUserBundle though ;)
             // extend the ``FOSUserBundle``
-            new FOS\UserBundle\FOSUserBundle(),
             new Sonata\UserBundle\SonataUserBundle('FOSUserBundle'),
             // OR
             // the bundle will NOT extend ``FOSUserBundle``
@@ -55,14 +50,18 @@ Next, be sure to enable the bundles in your and ``AppKernel.php`` file:
         );
     }
 
+.. note::
+    If you already have installed a Sonata dependency, you may ignore the step
+    on the modification of the ``autoload.php`` file.
+
 Configuration
 -------------
-When using ACL, the ``UserBundle`` can prevent `normal` user to change settings of `super-admin` users, to enable this add to the configuration:
+When using ACL, the UserBundle can prevent ``normal`` user to change settings
+of ``super-admin`` users, to enable this add to the configuration:
 
 .. code-block:: yaml
 
     # app/config/config.yml
-
     sonata_user:
         security_acl: true
         manager_type: orm # can be orm or mongodb
@@ -76,17 +75,12 @@ When using ACL, the ``UserBundle`` can prevent `normal` user to change settings 
     # app/config/security.yml
     security:
         # [...]
-        
-        encoders:
-            FOS\UserBundle\Model\UserInterface: sha512
-        
         acl:
             connection: default
 
 Doctrine Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
-
-Add these config lines
+Then add these bundles in the config mapping definition (or enable `auto_mapping <http://symfony.com/doc/2.0/reference/configuration/doctrine.html#configuration-overview>`_):
 
 .. code-block:: yaml
 
@@ -100,23 +94,10 @@ Add these config lines
 
         group:
             group_class:   Application\Sonata\UserBundle\Entity\Group
-            group_manager: sonata.user.orm.group_manager                    # If you're using doctrine orm (use sonata.user.mongodb.user_manager for mongodb)
+            group_manager: sonata.user.orm.group_manager                    # If you're using doctrine orm
 
         service:
-            user_manager: sonata.user.orm.user_manager                      # If you're using doctrine orm (use sonata.user.mongodb.group_manager for mongodb)
-    
-    doctrine:
-
-        dbal:
-            types:
-                json: Sonata\Doctrine\Types\JsonType
-
-
-And these in the config mapping definition (or enable `auto_mapping <http://symfony.com/doc/2.0/reference/configuration/doctrine.html#configuration-overview>`_):
-
-.. code-block:: yaml
-
-    # app/config/config.yml
+            user_manager: sonata.user.orm.user_manager                      # If you're using doctrine orm
 
     doctrine:
         orm:
@@ -126,14 +107,18 @@ And these in the config mapping definition (or enable `auto_mapping <http://symf
                         ApplicationSonataUserBundle: ~
                         SonataUserBundle: ~
 
+        dbal:
+            types:
+                json: Sonata\Doctrine\Types\JsonType
+
 
 
 Use custom SonataUser controllers and templates instead of FOSUser ones
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you wish to use custom ``SonataUserBundle`` templates and controllers instead of ``FOSUser`` ones, you will have to update your ``routing.yml`` file as follows:
+If you wish to use custom SonataUser templates and controllers instead of FOSUser ones, you will have to update your ``routing.yml`` file as follows:
 
-Replace:
+Replace
 
 .. code-block:: yaml
 
@@ -182,8 +167,7 @@ With:
 
 Integrating the bundle into the Sonata Admin Bundle
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Add the related security routing information:
+Add the related security routing information
 
 .. code-block:: yaml
 
@@ -191,7 +175,7 @@ Add the related security routing information:
         resource: '@SonataUserBundle/Resources/config/routing/admin_security.xml'
         prefix: /admin
 
-Then, add a new custom firewall handlers for the admin:
+Then add a new custom firewall handlers for the admin
 
 .. code-block:: yaml
 
@@ -228,7 +212,7 @@ Then, add a new custom firewall handlers for the admin:
 
             # -> end custom configuration
 
-            # default login area for standard users
+            # defaut login area for standard users
 
             # This firewall is used to handle the public login area
             # This part is handled by the FOS User Bundle
@@ -244,7 +228,7 @@ Then, add a new custom firewall handlers for the admin:
                 logout:             true
                 anonymous:          true
 
-The last part is to define 3 new access control rules:
+The last part is to define 3 new access control rules :
 
 .. code-block:: yaml
 
@@ -271,17 +255,18 @@ Using the roles
 ---------------
 
 Each admin has its own roles, use the user form to assign them to other users.
-The available roles to assign to others are limited to the roles available to the user editing the form.
+The available roles to assign to others are limited to the roles available to
+the user editing the form.
 
 Extending the Bundle
 --------------------
-At this point, the bundle is functional, but not quite ready yet. You need to generate the correct entities for the media:
+At this point, the bundle is functionnal, but not quite ready yet. You need to
+generate the correct entities for the media::
 
-.. code-block:: bash
+    php app/console sonata:easy-extends:generate SonataUserBundle
 
-    php app/console sonata:easy-extends:generate SonataUserBundle -d src
-
-If you specify no parameter, the files are generated in ``app/Application/SonataUserBundle`` but you can specify the path with ``--dest=src``
+If you specify no parameter, the files are generated in app/Application/Sonata...
+but you can specify the path with ``--dest=src``
 
 .. note::
 
@@ -291,14 +276,13 @@ If you specify no parameter, the files are generated in ``app/Application/Sonata
     point to a global namespace. For instance the user will be
     ``Application\Sonata\UserBundle\Entity\User``.
 
-Now, add the new ``Application`` Bundle into the kernel:
+Now, add the new `Application` Bundle into the kernel:
 
 .. code-block:: php
 
     <?php
 
     // AppKernel.php
-
     class AppKernel {
         public function registerbundles()
         {
